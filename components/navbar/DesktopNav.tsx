@@ -8,7 +8,7 @@ import { Search } from 'lucide-react'
 export default function DesktopNav() {
     return (
         // Desktop Navbar
-        <header className="flex items-center justify-between w-full h-16 px-2 md:px-10 bg-white shadow-md">
+        <header className="fixed flex items-center justify-between w-full h-16 px-2 md:px-10 bg-white shadow-md">
             <div className='w-1/4'>
                 <Link href="/" className="flex items-center ">
                     <Image src="/img/logo.png" alt="Logo" width={40} height={40} />

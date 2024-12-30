@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import DesktopNav from '@/components/navbar/DesktopNav';
 import SplashScreen from '@/components/splashscreen/SplashScreen';
+import { CourseGrid } from '@/components/course-grid/course-grid';
 
 const Page: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -22,15 +22,22 @@ const Page: React.FC = () => {
 
   return (
     <div className=''>
-      <DesktopNav />
       <div className="">
-        <div className="container mx-auto py-8">
+        <div className="container mx-auto pt-8 pb-5 md:py-8">
           <h1 className="text-2xl md:text-4xl font-bold text-center text-purple-800">Welcome to SkillSwap</h1>
-          <p className="text-center text-gray-600 mt-2">
-            Learn new skills, teach others, and earn money
-          </p>
         </div>
       </div>
+      <section className="container py-2 md:py-5 px-2 md:px-10 mx-auto">
+        <div className="bg-white">
+          <div className="text-center md:text-start">
+            <h1 className="text-xl md:text-3xl font-bold tracking-tight">Available Courses</h1>
+            <p className="my-2 text-muted-foreground ">
+              Explore our curated collection of Web3 courses and start learning today
+            </p>
+          </div>
+        </div>
+        <CourseGrid />
+      </section>
     </div>
   );
 };
