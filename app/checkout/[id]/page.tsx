@@ -2,16 +2,21 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { useParams } from "next/navigation"
 import { useState } from "react"
 
-export default function CheckoutPage({ params }: { params: { id: string } }) {
+export default function CheckoutPage() {
+  const params = useParams() // Access the dynamic route id
   const [isConnecting, setIsConnecting] = useState(false)
+
+  const id = params?.id
+  console.log("The ID is:", id)
 
   const handleConnectWallet = async () => {
     setIsConnecting(true)
     try {
-      // Wallet connection logic would go here
       await new Promise(resolve => setTimeout(resolve, 1000))
+      console.log('Wallet connected successfully')
     } catch (error) {
       console.error('Failed to connect wallet:', error)
     } finally {
@@ -20,7 +25,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 mt-20">
       <div className="container px-4 py-8 mx-auto max-w-md">
         <Card className="p-6">
           <div className="grid gap-6 text-center">

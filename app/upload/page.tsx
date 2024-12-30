@@ -49,7 +49,7 @@ export default function UploadPage() {
 
   return (
     <div className="container mx-auto px-4 py-20">
-      <h1 className="text-2xl font-bold mb-6">Upload a New Course</h1>
+      <h1 className="text-2xl text-start md:text-center font-bold mb-6 text-purple-800">Upload a New Course</h1>
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
         <div className="space-y-2">
           <Label htmlFor="title">Course Title</Label>

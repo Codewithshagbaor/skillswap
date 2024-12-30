@@ -1,9 +1,12 @@
+"use client";
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Clock, GraduationCap } from 'lucide-react'
 import Image from "next/image"
 import Link from "next/link"
+import { useParams } from "next/navigation"
 
 // This would normally fetch from an API
 const getCourse = (id: string) => {
@@ -29,11 +32,14 @@ const getCourse = (id: string) => {
   }
 }
 
-export default function CoursePage({ params }: { params: { id: string } }) {
-  const course = getCourse(params.id)
+export default function CoursePage() {
+//   const course = getCourse(params.id)
+    const params = useParams()
+    const id = Array.isArray(params?.id) ? params.id[0] : params?.id || ""
+    const course = getCourse(id)
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 mt-10 md:m-20">
       <div className="container px-4 py-8 mx-auto">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
