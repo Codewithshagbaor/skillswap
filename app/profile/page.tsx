@@ -13,7 +13,7 @@ const USER = {
 export default function ProfilePage() {
   return (
     <div className="container mx-auto px-4 py-20">
-      <h1 className="text-2xl font-bold mb-6">User Profile</h1>
+      <h1 className="text-2xl font-bold mb-6 text-purple-800">User Profile</h1>
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center gap-4">
@@ -22,14 +22,14 @@ export default function ProfilePage() {
               <AvatarFallback>{USER.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle>{USER.name}</CardTitle>
+              <CardTitle className="text-purple-800">{USER.name}</CardTitle>
               <p className="text-sm text-muted-foreground">{USER.email}</p>
             </div>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Course Statistics</CardTitle>
+            <CardTitle className="text-purple-800">Course Statistics</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="grid grid-cols-2 gap-4">

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import WebApp from '@twa-dev/sdk';
 
 type TelegramAuthContextType = {
     userID: number | null;
@@ -21,17 +20,25 @@ export const TelegramAuthContextProvider = ({
     const [username, setUsername] = useState<string | null>(null);
 
     useEffect(() => {
-        // Ensure this code only runs on the client side
-        if (typeof window !== 'undefined' && WebApp) {
-            WebApp.isVerticalSwipesEnabled = false;
-            setWindowHeight(WebApp.viewportStableHeight || window.innerHeight);
-            WebApp.ready();
+        let WebApp: any; // Declare a variable to hold the imported module
+        const initializeTelegramSDK = async () => {
+            if (typeof window !== 'undefined') {
+                // Dynamically import the SDK
+                const sdk = await import('@twa-dev/sdk');
+                WebApp = sdk.default;
 
-            // Set Telegram user data
-            const user = WebApp.initDataUnsafe.user;
-            setUserID(user?.id || null);
-            setUsername(user?.username || null);
-        }
+                WebApp.isVerticalSwipesEnabled = false;
+                setWindowHeight(WebApp.viewportStableHeight || window.innerHeight);
+                WebApp.ready();
+
+                // Set Telegram user data
+                const user = WebApp.initDataUnsafe.user;
+                setUserID(user?.id || null);
+                setUsername(user?.username || null);
+            }
+        };
+
+        initializeTelegramSDK();
     }, []);
 
     const contextValue = {
