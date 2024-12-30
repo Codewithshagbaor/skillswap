@@ -4,7 +4,15 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useState } from "react"
 
-export default function CheckoutPage({ params }: { params: { id: string } }) {
+// Define the correct params type for Next.js App Router
+type PageProps = {
+  params: {
+    id: string
+  }
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+export default function CheckoutPage({ params }: PageProps) {
   const [isConnecting, setIsConnecting] = useState(false)
 
   const handleConnectWallet = async () => {
@@ -41,4 +49,3 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
     </main>
   )
 }
-
