@@ -4,15 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useState } from "react"
 
-// Define the correct params type for Next.js App Router
-type PageProps = {
-  params: {
-    id: string
-  }
-  searchParams?: { [key: string]: string | string[] | undefined }
-}
-
-export default function CheckoutPage({ params }: PageProps) {
+export default function CheckoutPage({ params }: { params: { id: string } }) {
   const [isConnecting, setIsConnecting] = useState(false)
 
   const handleConnectWallet = async () => {
