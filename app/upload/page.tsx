@@ -133,6 +133,5 @@ export function CreateSkill() {
     </div>
   );
 }
-export default function UploadPage() {
-  return <CreateSkill />;
-}
+
+export default CreateSkill;
