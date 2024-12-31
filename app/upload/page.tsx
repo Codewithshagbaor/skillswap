@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Label } from '@/components/ui/label';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
-export function CreateSkill() {
+export default function CreateSkill() {
   const { contract } = useWeb3();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -134,4 +134,3 @@ export function CreateSkill() {
   );
 }
 
-export default CreateSkill;
