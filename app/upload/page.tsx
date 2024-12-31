@@ -51,7 +51,7 @@ export default function CreateSkill() {
         title: 'Success',
         description: 'Skill created successfully!',
       });
-      setFormData({ title: '', description: '', image: '', price: '', duration: '', level: '' });
+      setFormData({ title: '', description: '', image: '', price: ''});
     } catch (error: any) {
       toast({
         title: 'Error',
