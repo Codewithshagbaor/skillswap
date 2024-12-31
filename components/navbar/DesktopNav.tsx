@@ -4,8 +4,11 @@ import Image from 'next/image'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from 'lucide-react'
+import { useWeb3 } from '@/context/AuthContext'
 
 export default function DesktopNav() {
+    const { account, connectWallet, disconnect } = useWeb3();
+
     return (
         // Desktop Navbar
         <header className="fixed top-0  z-10 flex items-center justify-between w-full h-16 px-2 md:px-10 bg-white shadow-md">
@@ -27,21 +30,26 @@ export default function DesktopNav() {
 
             {/* nav links */}
             <nav className="flex items-center space-x-4">
-                <span className='hidden md:flex items-center space-x-4'>
-                    <Link href="/" className="text-gray-600 hover:border-b-purple-800 hover:border-b-2 duration-100 transition">
-                        Home
-                    </Link>
-                    <Link href="/upload" className="text-gray-600 hover:border-b-purple-800 hover:border-b-2 duration-100 transition">
-                        Upload
-                    </Link>
-                    <Link href="/profile" className="text-gray-600 hover:border-b-purple-800 hover:border-b-2 duration-100 transition">
-                        Profile
-                    </Link>
-                </span>
-
-                <Button variant="default" className="bg-purple-600 hover:bg-purple-700 text-white font-semibold w-32">
-                    Connect Wallet
-                </Button>
+                {account ? (
+                    <span className='hidden md:flex items-center space-x-4'>
+                        <Link href="/" className="text-gray-600 hover:border-b-purple-800 hover:border-b-2 duration-100 transition">
+                            Home
+                        </Link>
+                        <Link href="/upload" className="text-gray-600 hover:border-b-purple-800 hover:border-b-2 duration-100 transition">
+                            Upload
+                        </Link>
+                        <Link href="/profile" className="text-gray-600 hover:border-b-purple-800 hover:border-b-2 duration-100 transition">
+                            Profile
+                        </Link>
+                        <Button variant="default" className="bg-purple-600 hover:bg-purple-700 text-white font-semibold w-32" onClick={disconnect}>
+                        Disconnect
+                    </Button>
+                    </span>
+                ) : (
+                    <Button variant="default" className="bg-purple-600 hover:bg-purple-700 text-white font-semibold w-32" onClick={connectWallet}>
+                        Connect Wallet
+                    </Button>
+                )}
             </nav>
         </header>
     )

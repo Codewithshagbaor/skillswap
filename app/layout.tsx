@@ -1,9 +1,8 @@
 import './globals.css';
-import { AuthContextProvider } from '@/context/AuthContext';
+import { Web3Provider } from '@/context/AuthContext';
 import { TelegramAuthContextProvider } from '@/context/TelegramAuthContext';
-import '../flow-config';
-import DesktopNav from '@/components/navbar/DesktopNav';
 import { MobileNav } from '@/components/navbar/mobileNav';
+import ClientOnlyDesktopNav from '@/components/navbar/ClientOnlyDesktopNav';
 
 export default function RootLayout({
     children,
@@ -13,13 +12,13 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body suppressHydrationWarning={true}>
-                <AuthContextProvider>
+                <Web3Provider>
                     <TelegramAuthContextProvider>
-                        <DesktopNav />
-                            {children}
+                        <ClientOnlyDesktopNav />
+                        {children}
                         <MobileNav />
                     </TelegramAuthContextProvider>
-                </AuthContextProvider>
+                </Web3Provider>
             </body>
         </html>
     );
