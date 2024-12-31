@@ -30,7 +30,17 @@ const Web3Context = createContext<Web3ContextType>({
 });
 
 const contractAddress = '0xa2E76FcC07aaC6A2730c14F65110B4FCC1998D31';
-const flowEvmChainId = '0x221';
+export const TESTNET_PARAMS = {
+  chainId: '0x221',
+  chainName: 'Flow',
+  rpcUrls: ['https://testnet.evm.nodes.onflow.org'],
+  nativeCurrency: {
+    name: 'Flow',
+    symbol: 'FLOW',
+    decimals: 18,
+  },
+  blockExplorerUrls: ['https://evm-testnet.flowscan.io/'],
+};
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [account, setAccount] = useState<string | null>(null);
@@ -41,78 +51,62 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const connectWallet = async () => {
     try {
       let web3Provider: any;
-  
-      // Check for MetaMask or other injected Ethereum provider
+
       if (window.ethereum) {
         console.log('MetaMask detected. Using window.ethereum for provider.');
         web3Provider = window.ethereum;
-  
-        // Request accounts
-        const accounts = await web3Provider.request({
-          method: 'eth_requestAccounts',
-        });
-  
-        // Switch to the desired chain
+
+        const accounts = await web3Provider.request({ method: 'eth_requestAccounts' });
         try {
           await web3Provider.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: flowEvmChainId }],
+            params: [{ chainId: TESTNET_PARAMS.chainId }],
           });
-        } catch (switchError: any) {
-          if (switchError.code === 4902) {
-            console.log('Chain not found. Adding new chain...');
+        } catch (error: any) {
+          if (error.code === 4902) {
+            console.log('Flow Testnet not found. Adding new chain...');
             await web3Provider.request({
               method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId: flowEvmChainId,
-                  chainName: 'Flow EVM Testnet',
-                  nativeCurrency: { name: 'Flow Token', symbol: 'FLOW', decimals: 18 },
-                  rpcUrls: ['https://evm-testnet.flow.com'],
-                  blockExplorerUrls: ['https://evm-testnet.flowscan.org'],
-                },
-              ],
+              params: [TESTNET_PARAMS],
             });
           } else {
-            console.error('Error switching chain:', switchError);
-            throw switchError;
+            console.error('Error switching to Flow Testnet:', error);
+            throw error;
           }
         }
-  
-        // Initialize ethers provider
+
         const ethersProvider = new ethers.providers.Web3Provider(web3Provider);
         const signer = ethersProvider.getSigner();
         const contract = new ethers.Contract(contractAddress, SkillMarketABI, signer);
-  
-        // Update state
+
         setAccount(accounts[0]);
         setProvider(ethersProvider);
         setContract(contract);
         localStorage.setItem('walletConnected', 'true');
       } else {
-        // Fallback to WalletConnectProvider if MetaMask is not installed
         console.log('MetaMask not detected. Using WalletConnectProvider.');
-  
+
         const walletConnectProvider = new WalletConnectProvider({
           rpc: {
-            [parseInt(flowEvmChainId, 16)]: 'https://evm-testnet.flow.com',
+            [parseInt(TESTNET_PARAMS.chainId, 16)]: TESTNET_PARAMS.rpcUrls[0],
           },
         });
-  
-        await walletConnectProvider.enable();
-  
-        // Request accounts
-        const accounts = await walletConnectProvider.request({
-          method: 'eth_requestAccounts',
+
+        walletConnectProvider.connector.on('display_uri', (error: Error | null, payload: any) => {
+          if (error) {
+            console.error('Error displaying WalletConnect QR Code:', error);
+            return;
+          }
+          console.log('WalletConnect QR Code URI:', payload);
         });
-  
-        // Initialize ethers provider
+
+        await walletConnectProvider.enable();
+
         const ethersProvider = new ethers.providers.Web3Provider(walletConnectProvider);
         const signer = ethersProvider.getSigner();
         const contract = new ethers.Contract(contractAddress, SkillMarketABI, signer);
-  
-        // Update state
-        setAccount(accounts[0]);
+
+        setAccount(walletConnectProvider.accounts[0]);
         setProvider(ethersProvider);
         setContract(contract);
         localStorage.setItem('walletConnected', 'true');
@@ -121,7 +115,6 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       console.error('Error connecting wallet:', error);
     }
   };
-  
 
   const disconnect = () => {
     setAccount(null);
@@ -145,7 +138,6 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
 
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts: string[]) => {
-        console.log('Accounts changed:', accounts);
         if (accounts.length === 0) {
           disconnect();
         } else {
@@ -154,7 +146,6 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       });
 
       window.ethereum.on('chainChanged', () => {
-        console.log('Chain changed. Reloading page...');
         window.location.reload();
       });
     }
