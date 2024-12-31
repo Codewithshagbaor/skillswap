@@ -1,14 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import SkillMarketABI from '@/contracts/SkillMarket.json';
 
 declare global {
   interface Window {
     ethereum: any;
   }
 }
-import { ethers } from 'ethers';
-import SkillMarketABI from '@/contracts/SkillMarket.json';
 
 interface Web3ContextType {
   account: string | null;
@@ -39,18 +40,29 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
 
   const connectWallet = async () => {
     try {
-      if (!window.ethereum) return;
+      let web3Provider;
 
-      const accounts = await window.ethereum.request({
+      if (window.ethereum) {
+        web3Provider = window.ethereum;
+      } else {
+        web3Provider = new WalletConnectProvider({
+          rpc: {
+            [parseInt(flowEvmChainId, 16)]: 'https://evm-testnet.flow.com',
+          },
+        });
+        await web3Provider.enable();
+      }
+
+      const accounts = await web3Provider.request({
         method: 'eth_requestAccounts',
       });
 
-      await window.ethereum.request({
+      await web3Provider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: flowEvmChainId }],
       }).catch(async (switchError: any) => {
         if (switchError.code === 4902) {
-          await window.ethereum.request({
+          await web3Provider.request({
             method: 'wallet_addEthereumChain',
             params: [{
               chainId: flowEvmChainId,
@@ -63,12 +75,12 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         }
       });
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
+      const ethersProvider = new ethers.providers.Web3Provider(web3Provider);
+      const signer = ethersProvider.getSigner();
       const contract = new ethers.Contract(contractAddress, SkillMarketABI, signer);
 
       setAccount(accounts[0]);
-      setProvider(provider);
+      setProvider(ethersProvider);
       setContract(contract);
       localStorage.setItem('walletConnected', 'true');
     } catch (error) {
